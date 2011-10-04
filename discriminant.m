@@ -6,16 +6,15 @@ function [g] = discriminant( data, mu, sigma, p)
 [M, N] = size(data);
 g = ones(M, N);    % Pre-allocate space for g
     
-    for c=1:1
-        for x=1:1
-            enumerator = ( data(x,:) - mu(c,:) ).^2
-            denominator = 2*sigma(c,:).^2
-            g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( enumerator / denominator);
+    for x=1:M
+        for c=1:N
+            enumerator = ( data(x,:) - mu(c,:) );
+            denominator = 2*sigma(c,:);
+            g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( ( data(x,:) - mu(c,:) ).^2 / (2*sigma(c,:)).^2);
         end
     end
 g;
 end
 
 % Correct value for g(1,1)
-% log(p(1)) - (log(sigma(1,1)) + log(sigma(1,2))) -
-% (((feature_vector(1,1)-mu(1,1))^2 / (2*sigma(1,1)^2)) + ((feature_vector(1,2)-mu(1,2))^2 / (2*sigma(1,2)^2)))
+% log(p(1)) - (log(sigma(1,1)) + log(sigma(1,2))) - (((feature_vector(1,1)-mu(1,1))^2 / (2*sigma(1,1)^2)) + ((feature_vector(1,2)-mu(1,2))^2 / (2*sigma(1,2)^2)))
