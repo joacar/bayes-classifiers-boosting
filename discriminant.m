@@ -1,16 +1,16 @@
 function [g] = discriminant( data, mu, sigma, p)
 %DISCRIMINANT Computes the Maximum A Posteriori (MAP)
 %   The discriminant function computes that given a pixel, how likely is it
-%   to belong to the hand imager or the hand plus book image
+%   to belong to the hand image or the hand plus book image
 
 [M, N] = size(data);
 g = ones(M, N);    % Pre-allocate space for g
     
     for x=1:M
         for c=1:N
-            enumerator = ( data(x,:) - mu(c,:) );
-            denominator = 2*sigma(c,:);
-            g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( ( data(x,:) - mu(c,:) ).^2 / (2*sigma(c,:)).^2);
+            enumerator = ( data(x,:) - mu(c,:) ).^2;
+            denominator = 2*sigma(c,:).^2;
+            g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( enumerator ./ denominator);
         end
     end
 g;
