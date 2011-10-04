@@ -32,17 +32,18 @@ function [ mu, sigma ] = bayes(D)
         sigma_star = sqrt(sigma_star / Mi);
     end
 
-[~,n_] = size(D);
-
 % The last column in D is the classification c
-c = D(:,n_);
+c = D(:,end);
 
 % The first n-1 columns in D is the feature vectors x1, ..., x(n-1)
-D(:,n_) = [];    % Remove the las column
+D(:,end) = [];    % Remove the last column
 x = D;
 
-mu = ones(2, 2);
-sigma = ones(2, 2);
+[M,N] = size(D);
+
+mu = ones(N, N);
+sigma = ones(N, N);
+
 
 mu(1,1) = mean(x(:,1), c, 0);  
 mu(1,2) = mean(x(:,2), c, 0);
