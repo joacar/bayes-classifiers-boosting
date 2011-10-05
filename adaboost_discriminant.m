@@ -13,7 +13,7 @@ function [c] = adaboost_discriminant( data, mu, sigma, p, alpha, classes, t)
 %   to belong to the hand image or the hand plus book image
 
 [m, n] = size(data);
-g = ones(m, n);    % Pre-allocate space for g
+c = ones(m, 1);    % Pre-allocate space for g
     
     for x=1:m
         for c=1:n
@@ -22,8 +22,4 @@ g = ones(m, n);    % Pre-allocate space for g
             g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( enumerator ./ denominator);
         end
     end
-g;
 end
-
-% Correct value for g(1,1)
-% log(p(1)) - (log(sigma(1,1)) + log(sigma(1,2))) - (((feature_vector(1,1)-mu(1,1))^2 / (2*sigma(1,1)^2)) + ((feature_vector(1,2)-mu(1,2))^2 / (2*sigma(1,2)^2)))
