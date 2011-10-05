@@ -83,3 +83,5 @@ imagesc(result_im);
 % Should produce the same as bayes(test_data)
 w = ones(M,1) ./ M;
 [mu sigma] = bayes_weight(test_data, w)
+
+
