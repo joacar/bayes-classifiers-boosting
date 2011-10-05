@@ -22,7 +22,7 @@ data2 = data2(1:10,:)
 test_data = [data1; data2];
 
 %%%% ASSIGNMENT ONE %%%%
-[mu sigma] = bayes([data1(1:10,:); data2(1:10,:)])
+[mu sigma] = bayes(test_data)
 
 theta = [0:0.01:2*pi];
 x1 = 2*sigma(1,1)*cos(theta) + mu(1,1);
@@ -79,3 +79,7 @@ result_im = uint8(double(book) .* mask3D);
 figure;
 imagesc(result_im);
 
+%%%% ASSIGNMENT THREE %%%%
+% Should produce the same as bayes(test_data)
+w = ones(M,1) ./ M;
+[mu sigma] = bayes_weight(test_data, w)
