@@ -22,9 +22,7 @@ data2 = data2(1:10,:)
 test_data = [data1; data2];
 
 %%%% ASSIGNMENT ONE %%%%
-[mu sigma] = bayes(test_data);
-mu
-sigma
+[mu sigma] = bayes([data1(1:10,:); data2(1:10,:)])
 
 theta = [0:0.01:2*pi];
 x1 = 2*sigma(1,1)*cos(theta) + mu(1,1);
