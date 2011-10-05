@@ -1,4 +1,4 @@
-clf
+clf('reset')
 
 hand = imread('hand.ppm', 'ppm');
 book = imread('book.ppm', 'ppm');
