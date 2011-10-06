@@ -1,9 +1,9 @@
-function [c] = adaboost_discriminant( data, mu, sigma, p, alpha, classes, t)
+function [c] = adaboost_discriminant( data, mu, sigma, p, alpha, classes, T)
 %DISCRIMINANT Computes the maximum A Posteriori (MAP) given the data
 %   INPUT data = data set, a MxN matrix
-%   INPUT mu = mean for data (bayes.m)
-%   INPUT sigma = deviation for data (bayes.m)
-%   INPUT p = prior probability (prior.m)
+%   INPUT mu = mean for data (bayes_weight.m)
+%   INPUT sigma = deviation for data (bayes_weight.m)
+%   INPUT p = prior probability (prior.m using weights)
 %   INPUT alpha = 
 %   INPUT classes =
 %   INPUT t =
@@ -12,14 +12,25 @@ function [c] = adaboost_discriminant( data, mu, sigma, p, alpha, classes, t)
 %   The discriminant function computes that given a pixel, how likely is it
 %   to belong to the hand image or the hand plus book image
 
-[m, n] = size(data);
-c = ones(m, 1);    % Pre-allocate space for g
+[M, N] = size(data);
+c = ones(M, 1);    % Pre-allocate space for c
+
+for m=1:M
     
-    for x=1:m
-        for c=1:n
-            enumerator = ( data(x,:) - mu(c,:) ).^2;
-            denominator = 2*sigma(c,:).^2;
-            g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( enumerator ./ denominator);
-        end
+    c_t = ones(length(classes), 1)
+    for t=1:T
+    p_ = p(t,:);
+    g = discriminant(data, mu(:,:,t), sigma(:,:,t), p_)
+    [~, class_ ] = max(g, [], 2);
+    class_ = class_ - 1
+    
+    for i=1:length(classes)
+        delta = (class_ == classes(i));
+        c_t(i,1) = alpha' * delta;
     end
+    c(m,1) = max(c_t);
+    end
+end
+
+
 end

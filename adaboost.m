@@ -7,55 +7,69 @@ function [mu, sigma, p, alpha, classes] = adaboost( data, t )
 %
 class = data(:,end);
 classes = unique(class);
-c = length(classes);
-[m, n] = size(data(:,1:end-1));
+nr_classes = length(classes);
+features = data(:,1:end-1); 
+[m, n] = size(data);
+
+
 
 % Pre allocate return variables
-alpha = zeros(t, 1);
-p = zeros(t,c);
-mu = zeros(t, c, n);
-sigma = zeros(t, c, n);
+alpha = ones(t, 1);
+p = ones(t, nr_classes);
+mu = ones(n-1, nr_classes, t);
+sigma = ones(n-1, nr_classes, t);
 
 % Optional ?
 error = zeros(t, 1);
 
 % Initiate default weight wector
-w = zeros(m, t+1);
-w(:,1) = ones(m,1) ./ m;
+w = ones(m, 1) / m;
 
 % Call bayes_weight repeatedly
 for i=1:t
     % Use the new adjusted weights as input
-    w_ = w(:,i);
-    for j=1:c
-        index = find(class == classes(j));
-        w_ = w_(index);
-        
-        % Calculate the hypothesis and prior using new w_
-        [mu_, sigma_] = bayes_weight(data, w_);
-        p_ = prior(data, w);
-        p(t, c) = p_(c);
-        
-        % Compute the error with respect to w
-        delta = 
-        e = 1 - w_'*delta(index);
-
-        a = 0.5*ln( (1-e) / e );
-
-        w(:,i+1) = w_(index) ./ Z;
-        if 1 == 1
-            w(:,i+1) = exp(a);
-        else
-            w(:,i+1) = exp(-a);
-        end
-
-    end
-
-        mu(i,:,:) = mu_;
-        sigma(i,:,:) = sigma_;
-
-        error(i, 1) = e;
-        alpha(i, 1) = a;
+    w_ = w;
+    
+    % Calculate the hypothesis and prior using new weights w_
+    p_ = prior(data, w_);
+    [mu_, sigma_] = bayes_weight(data, w_);
+    
+    
+    % Call the discriminant and predict the values
+    g = discriminant(features, mu_, sigma_, p_);
+    
+    % Find the maximum of each feature
+    % dummy contains the max(g(:,x), g(:,y))
+    % class_ contains either x or y depending on which is greatest
+    [~, class_] = max(g, [], 2);
+    class_ = class_ - 1;
+    
+    % 1 iff correctly classified, 0 otherwise
+    delta = (class_ == class);
+    
+    % Index of the incorrect and correct classified features
+    correct = find(delta == 1);
+    incorrect = find(delta == 0);
+    
+    % Compute the error with respect to w
+    e = 1.0 - sum( delta' * w_ );
+    
+    a = 0.5*log( (1-e) / e );
+    
+    w_(correct) = ones(length(correct), 1) .* exp(-a);
+    w_(incorrect) = ones(length(incorrect), 1) .* exp(a);
+    
+    % Z is a normalizing constant
+    Z = sum(w_);
+    w = w_ ./ Z;
+   
+    % Update all the variables
+    mu(:,:,i) = mu_;
+    sigma(:,:,i) = sigma_;
+    
+    error(i, 1) = e;
+    alpha(i, 1) = a;
+    p(i, :) = p_;
 end
 
 

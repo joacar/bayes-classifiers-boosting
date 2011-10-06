@@ -40,6 +40,7 @@ g = discriminant(test_data(:,1:2), mu, sigma, p)
 [M N] = size(test_data);
 [dummy class] = max(g, [], 2);
 class = class - 1;
+delta = class == test_data(:,end)
 error_test = 1.0-sum(class == test_data(:,end))/M
 
 ax = [0.2 0.5 0.2 0.45];
@@ -79,9 +80,15 @@ result_im = uint8(double(book) .* mask3D);
 figure;
 imagesc(result_im);
 
-%%%% ASSIGNMENT THREE %%%%
+%%%% ASSIGNMENT THREE AND FOUR %%%%
 % Should produce the same as bayes(test_data)
 w = ones(M,1) ./ M;
 [mu sigma] = bayes_weight(test_data, w)
+
+
+T = 6;
+[mu sigma p alpha classes] = adaboost(test_data, T)
+class = adaboost_discriminant(test_data(:,1:N-1), mu, sigma, p, alpha, classes, T);
+boost_error_test = 1.0-sum(class == test_data(:,end))/M
 
 
