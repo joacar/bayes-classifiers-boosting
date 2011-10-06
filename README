@@ -2,7 +2,34 @@ Authors: joakim carselind and pascal chatterjee
 Version:
 
 DESCRIPTION
-Bayes classifiers and boosting implementation in matlab for the course Machine Learning at Royal Institute of Technology
+Bayes classifiers and adaptive boosting implementation in matlab for the course Machine Learning at Royal Institute of Technology
 
-USAGE
+EXPLANATION
+A feature vector is a column vector in the matrix MxN. 
 
+FUNCTIONS
+Input and output definitions as well as functionallity
+
+rg_im = normalize_and_label(image, label)
+-----------------------------
+	INPUT: 	image = image
+	INPUT: 	label = label to label image
+	OUTPUT: rg_im = Mx3 vector
+
+Computes the intensity of red and green in each pixels. Label the computed values with an integer and creates a matrix of size Mx3 where M is the amount of pixels in image. rg_im(:,1) = [intensity red, intensity green, labe]
+
+p = prior(data, w)
+-----------------------------
+	INPUT: 	data = MxN+1 matrix. MxN feature vectors and Mx1 class vector
+	INPUT: 	w = Mx1 vector with weights (optionally, default is ones)
+	OUTPUT: p = 1xC vector
+
+Computes the probability of class c in MxN. Ex. c = {0,1} then p = [0.5, 0.5] means that half of the data is labeled 0 and other half labeled 1
+
+[mu, sigma] = bayes(data)
+-----------------------------
+	INPUT:	data = MxN+1 matrix. MxN feature vectors and Mx1 class vector
+	OUTPUT:	mu = CxM matrix with mean for each class c in C
+	OUTPUT:	sigma = CxM matrix with deviation for each class c in C	
+
+Computes the mean and deviation for each feature vector x_n, n in {1,..,N}, with attribute labeled with c in C. 
