@@ -28,11 +28,11 @@ w = ones(m, 1) ./ sum(m);
 % Call bayes_weight repeatedly
 for i=1:t
     % Use the new adjusted weights as input
-    w_ = w;
-    
+%     w_ = w;
+%     
     % Calculate the hypothesis and prior using new weights w_
-    p_ = prior(data, w_);
-    [mu_, sigma_] = bayes_weight(data, w_);
+    p_ = prior(data, w);
+    [mu_, sigma_] = bayes_weight(data, w);
     
     
     % Call the discriminant and predict the values
@@ -52,26 +52,30 @@ for i=1:t
     incorrect = find(delta == 0);
     
     % Compute the error with respect to w
-    e = 1.0 - (delta' * w_);
+    e = 1.0 - (delta' * w);
    
     % Compute the alpha value
     a = 0.5*log( (1-e) / e );
     
+    w_next = w;
+    
     % Re-compute all the weights for w(t+1) to match the current classification
     % Z is a normalizing constant  
-    w(correct) = ones(length(correct), 1) .* exp(-a);
+    w_next(correct) = w(correct) .* exp(-a);
     %Z = sum(w_(correct));
     %w(correct) = w_(correct) ./ Z;
     
     
-    w(incorrect) = ones(length(incorrect), 1) .* exp(a);
+    w_next(incorrect) = w(incorrect) .* exp(a);
     %Z = sum(w_(incorrect));
     %w(incorrect) = w_(incorrect) ./ Z;
-    Z = sum(w);
-    w = w ./ Z;
+    Z = sum(w_next);
+    w_next = w_next ./ Z;
     
     
     % Update all the variables
+    w = w_next;
+    
     mu(:,:,i) = mu_;
     sigma(:,:,i) = sigma_;
     
