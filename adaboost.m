@@ -23,7 +23,7 @@ sigma = ones(n-1, nr_classes, t);
 error = zeros(t, 1);
 
 % Initiate default weight wector
-w = ones(m, 1) / m;
+w = ones(m, 1) ./ m;
 
 % Call bayes_weight repeatedly
 for i=1:t
@@ -52,17 +52,25 @@ for i=1:t
     incorrect = find(delta == 0);
     
     % Compute the error with respect to w
-    e = 1.0 - sum( delta' * w_ );
-    
+    e = 1.0 - (delta' * w_);
+   
+    % Compute the alpha value
     a = 0.5*log( (1-e) / e );
     
-    w_(correct) = ones(length(correct), 1) .* exp(-a);
-    w_(incorrect) = ones(length(incorrect), 1) .* exp(a);
+    % Re-compute all the weights for w(t+1) to match the current classification
+    % Z is a normalizing constant  
+    w(correct) = ones(length(correct), 1) .* exp(-a);
+    %Z = sum(w_(correct));
+    %w(correct) = w_(correct) ./ Z;
     
-    % Z is a normalizing constant
-    Z = sum(w_);
-    w = w_ ./ Z;
-   
+    
+    w(incorrect) = ones(length(incorrect), 1) .* exp(a);
+    %Z = sum(w_(incorrect));
+    %w(incorrect) = w_(incorrect) ./ Z;
+    Z = sum(w);
+    w = w ./ Z;
+    
+    
     % Update all the variables
     mu(:,:,i) = mu_;
     sigma(:,:,i) = sigma_;

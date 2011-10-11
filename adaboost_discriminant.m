@@ -17,16 +17,16 @@ c = ones(M, 1);    % Pre-allocate space for c
 
 for m=1:M
     
-    c_t = ones(length(classes), 1)
+    c_t = ones(length(classes), 1);
     for t=1:T
     p_ = p(t,:);
-    g = discriminant(data, mu(:,:,t), sigma(:,:,t), p_)
+    g = discriminant(data, mu(:,:,t), sigma(:,:,t), p_);
     [~, class_ ] = max(g, [], 2);
-    class_ = class_ - 1
+    class_ = class_ - 1;
     
     for i=1:length(classes)
         delta = (class_ == classes(i));
-        c_t(i,1) = alpha' * delta;
+        c_t(i,1) = alpha .* delta;
     end
     c(m,1) = max(c_t);
     end
