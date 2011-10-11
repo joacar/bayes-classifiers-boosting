@@ -23,7 +23,7 @@ sigma = ones(n-1, nr_classes, t);
 error = zeros(t, 1);
 
 % Initiate default weight wector
-w = ones(m, 1) ./ m;
+w = ones(m, 1) ./ sum(m);
 
 % Call bayes_weight repeatedly
 for i=1:t
