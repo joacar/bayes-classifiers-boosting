@@ -19,7 +19,6 @@ g = ones(m, n);    % Pre-allocate space for g
             g(x,c) = log(p(c)) - sum(log(sigma(c,:))) - sum( enumerator ./ denominator);
         end
     end
-g;
 end
 
 % Correct value for g(1,1)
